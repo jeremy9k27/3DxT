@@ -1,0 +1,270 @@
+
+'''
+#block 1
+!pip install mplsoccer
+from mplsoccer import Sbopen, VerticalPitch
+import numpy as np
+import matplotlib.pyplot as plt
+# The first thing we have to do is open the data. We use a parser SBopen available in mplsoccer.
+import pandas as pd
+
+
+pd.options.display.max_columns = None
+
+parser = Sbopen()
+'''
+
+
+
+
+'''
+#block 2
+df_all= pd.DataFrame()
+
+for i in (range(3788741, 3788776)):
+
+  #open event dataset
+  print('hi')
+  df_event = parser.event(i)[0]
+  df_frame, df_visible = parser.frame(i)
+
+  #df_action = df_event.loc[df_event['type_name'] != 'Starting XI' & df_event['type_name'] != 'Pressure']
+  action_filter = df_event['type_name'].isin(['Pass', 'Carry', 'Dribble', 'Shot'])
+
+  df_actions = df_event[action_filter]
+
+
+  df_actions['line'] = 0
+
+  for index, row in df_actions.iterrows():
+    event_id = row['id']
+    positions = df_frame.loc[df_frame["id"] == event_id]
+    defense = positions.loc[positions["teammate"] == False]
+    if len(defense) < 2:
+      df_actions.loc[index, "line"] = None
+    else:
+      sorted = defense.x.sort_values()
+      df_actions.loc[index, "line"] = sorted.iloc[-2] #second lowest defender
+
+  df_all = pd.concat([df_all, df_actions])
+'''
+
+
+
+'''
+#block 3
+for i in (range(3835321, 3835342)):
+
+  #open event dataset
+  df_event = parser.event(i)[0]
+  df_frame, df_visible = parser.frame(i)
+
+  #df_action = df_event.loc[df_event['type_name'] != 'Starting XI' & df_event['type_name'] != 'Pressure']
+  action_filter = df_event['type_name'].isin(['Pass', 'Carry', 'Dribble', 'Shot'])
+
+  df_actions = df_event[action_filter]
+
+
+  df_actions['line'] = 0
+
+  for index, row in df_actions.iterrows():
+    event_id = row['id']
+    positions = df_frame.loc[df_frame["id"] == event_id]
+    defense = positions.loc[positions["teammate"] == False]
+    if len(defense) < 2:
+      df_actions.loc[index, "line"] = None
+    else:
+      sorted = defense.x.sort_values()
+      df_actions.loc[index, "line"] = sorted.iloc[-2] #second lowest defender
+
+  df_all = pd.concat([df_all, df_actions])
+'''
+
+
+
+
+
+#block 4
+x_edges = np.linspace(0, 120, 13)
+x_labels = np.linspace(0,11, 12)
+y_edges = np.linspace(0, 80, 9)
+y_labels = np.linspace(0, 7, 8)
+line_edges = np.linspace(0, 120, 13)
+line_labels = np.linspace(0, 11, 12)
+
+df_all['x_bins'] = pd.cut(df_all['x'], bins=x_edges, labels = x_labels)
+df_all['end_x_bins'] = pd.cut(df_all['end_x'], bins=x_edges, labels = x_labels)
+df_all['y_bins'] = pd.cut(df_all['y'], bins=y_edges, labels = y_labels)
+df_all['end_y_bins'] = pd.cut(df_all['end_y'], bins=y_edges, labels = y_labels)
+df_all['line_bins'] = pd.cut(df_all['line'], bins=line_edges, labels = line_labels)
+
+df_all_nec = df_all[['timestamp', 'possession_team_name', 'player_name', 'type_name', 'outcome_name', 'x_bins', 'y_bins', 'line_bins', 'end_x_bins', 'end_y_bins']]
+
+df_all_nec = df_all_nec.dropna(subset = ['line_bins', 'x_bins', 'y_bins'])
+
+
+#create 3d array for number of all instances that happened in each location
+all_instances = np.zeros((12, 8, 12))
+
+for i in range(12):
+    for j in range(8):
+        for k in range(12):
+          instances = df_all_nec.loc[(df_all_nec['line_bins'] == k) & (df_all_nec['y_bins'] == j) & (df_all_nec['x_bins'] == i)]
+          #print(i,j,k, len(instances))
+          all_instances[i, j, k] = len(instances)
+
+
+#create 3d array for number of all shots taken from each location
+all_shots = np.zeros((12, 8, 12))
+
+for i in range(12):
+    for j in range(8):
+        for k in range(12):
+          shots = df_all_nec.loc[(df_all_nec['line_bins'] == k) & (df_all_nec['y_bins'] == j) & (df_all_nec['x_bins'] == i) & (df_all_nec['type_name'] == 'Shot')]
+          #print(i,j,k, len(instances))
+          all_shots[i, j, k] = len(shots)
+
+shot_percent = all_shots / all_instances
+
+#create 3d array for number of goals scored from each location
+all_goals = np.zeros((12, 8, 12))
+
+for i in range(12):
+    for j in range(8):
+        for k in range(12):
+          goals = df_all_nec.loc[(df_all_nec['line_bins'] == k) & (df_all_nec['y_bins'] == j) & (df_all_nec['x_bins'] == i) & (df_all_nec['type_name'] == 'Shot') & (df_all_nec['outcome_name'] == 'Goal')]
+          #print(i,j,k, len(goals))
+          all_goals[i, j, k] = len(goals)
+
+
+#create 3d array of percent of shots that are scored from each location
+goal_percent = all_goals / all_shots
+
+
+#create 3d array of percent that the ball is moved to a new location from each location
+#move_percent = 1 - (all/shots / all_instances)
+
+
+
+
+
+#Block 5
+#create transition matrix: array of arrays
+'''create emtpy matrix
+
+for i in range(12):
+    for j in range(8):
+        for k in range(12):
+          start = df_all_nec.loc[(df_all_nec['end_x_bins'] == i), (df_all_nec['end_y_bins'] == j), (df_all_nec['line_bins'] == k)]
+          for index, row in start.iterrows():
+            tempxend = row['end_x_bins']
+            tempyend = row['end_y_bins']
+            transition[tempxend, tempyend] += 1
+          divide by total instances starting from the bins (len(start)) to get probability of moving to each
+          transition /
+'''
+'''
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Create a sample 3D array
+array_3d = shot_percent * goal_percent
+# Define a colormap for mapping values to colors
+cmap = plt.get_cmap('viridis')  # You can choose other colormaps
+
+# Normalize the data to map it to the colormap
+norm = plt.Normalize(array_3d.min(), array_3d.max())
+
+# Create a figure and axis
+fig, ax = plt.subplots()
+
+# Display the 3D array as a 2D image with color mapping
+im = ax.imshow(array_3d[:, :, 2], cmap=cmap, norm=norm)
+
+# Add a colorbar to show the mapping of values to colors
+cbar = plt.colorbar(im, ax=ax)
+
+# Show the plot
+plt.show()
+'''
+
+'''
+notes
+remove all incomplete passes/dribbles etc. remove any NaN in def line.
+df_test = df_event[['possession_team_name', 'type_name', 'outcome_name', 'timestamp']]
+download datasets locally
+'''
+
+'''
+#chains
+#df_test['type_name'].unique()
+df_test = df_event[['possession_team_name', 'type_name', 'outcome_name', 'timestamp']]
+cons = ~df_test['type_name'].isin(['Starting XI', 'Half Start', 'Injury Stoppage', 'Referee Ball-Drop', 'Half End', 'Substitution', 'Tactical Shift', 'Shield'])
+df_test = df_test[cons]
+df_test.head(30)
+'''
+
+
+
+
+
+
+
+
+
+import plotly.graph_objs as go
+import numpy as np
+
+# Create a sample 3D array
+array_3d = shot_percent * goal_percent  # Replace this with your own data
+
+array_3d = np.nan_to_num(array_3d, nan = 0)
+
+# Get the shape of the 3D array
+depth, rows, cols = array_3d.shape
+
+# Create 3D coordinates for the grid
+y, x, z = np.meshgrid(np.arange(rows),
+                      np.arange(cols),
+                      np.arange(depth))
+
+# Flatten the coordinates and values for the scatter plot
+x = x.flatten()
+y = y.flatten()
+z = z.flatten()
+values = array_3d.flatten()
+
+# Create a 3D scatter plot
+scatter = go.Scatter3d(
+    x=x,
+    y=y,
+    z=z,
+    text = values,
+    mode='markers',
+    marker=dict(
+        size=5,
+        color=values,  # Color based on the values
+        colorscale='BuPu',  # You can choose other color scales
+        opacity=0.8,
+        colorbar=dict(title='Values'),  # Colorbar title
+    ),
+)
+
+# Create a layout for the plot
+layout = go.Layout(
+    title = '                                                    EXPECTED THREAT AFTER 0 ITERATIONS (AKA xG)',
+    scene=dict(
+        xaxis_title='Touchline',
+        yaxis_title='Goal line',
+        zaxis_title='Defensive Line Height',
+
+    ),
+
+)
+
+# Create a figure and add the scatter plot and layout
+fig = go.Figure(data=[scatter], layout=layout)
+fig = fig.update_traces(textposition='top center')
+
+# Show the interactive plot
+fig.show()
