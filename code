@@ -1,4 +1,3 @@
-
 '''
 #block 1
 !pip install mplsoccer
@@ -13,8 +12,6 @@ pd.options.display.max_columns = None
 
 parser = Sbopen()
 '''
-
-
 
 
 '''
@@ -53,7 +50,7 @@ for i in (range(3788741, 3788776)):
 
 '''
 #block 3
-for i in (range(3835321, 3835342)):
+for i in (range(3835321, 38353235)):
 
   #open event dataset
   df_event = parser.event(i)[0]
@@ -81,8 +78,7 @@ for i in (range(3835321, 3835342)):
 '''
 
 
-
-
+df_all = pd.read_csv('df_all.csv')
 
 #block 4
 x_edges = np.linspace(0, 120, 13)
@@ -139,10 +135,12 @@ for i in range(12):
 
 #create 3d array of percent of shots that are scored from each location
 goal_percent = all_goals / all_shots
+goal_percent = np.nan_to_num(goal_percent, nan = 0)
 
 
 #create 3d array of percent that the ball is moved to a new location from each location
-#move_percent = 1 - (all/shots / all_instances)
+move_percent = np.ones((12,8,12)) - shot_percent #not sure what to do with nas here
+move_percent = np.nan_to_num(move_percent, nan = 0)
 
 
 
@@ -150,73 +148,46 @@ goal_percent = all_goals / all_shots
 
 #Block 5
 #create transition matrix: array of arrays
-'''create emtpy matrix
 
+
+transition = np.empty((12, 8, 12), dtype = object)
 for i in range(12):
     for j in range(8):
         for k in range(12):
-          start = df_all_nec.loc[(df_all_nec['end_x_bins'] == i), (df_all_nec['end_y_bins'] == j), (df_all_nec['line_bins'] == k)]
+          start = df_all_nec.loc[(df_all_nec['end_x_bins'] == i) & (df_all_nec['end_y_bins'] == j) & (df_all_nec['line_bins'] == k)]
+          temp_array = np.zeros((12,8,12))
           for index, row in start.iterrows():
             tempxend = row['end_x_bins']
             tempyend = row['end_y_bins']
-            transition[tempxend, tempyend] += 1
-          divide by total instances starting from the bins (len(start)) to get probability of moving to each
-          transition /
-'''
-'''
-import matplotlib.pyplot as plt
-import numpy as np
+            templineend = row['line_bins']
+            temp_array[int(tempxend), int(tempyend), int(templineend)] += 1
+          transition[i, j, k] = (temp_array / np.sum(temp_array))
 
-# Create a sample 3D array
-array_3d = shot_percent * goal_percent
-# Define a colormap for mapping values to colors
-cmap = plt.get_cmap('viridis')  # You can choose other colormaps
-
-# Normalize the data to map it to the colormap
-norm = plt.Normalize(array_3d.min(), array_3d.max())
-
-# Create a figure and axis
-fig, ax = plt.subplots()
-
-# Display the 3D array as a 2D image with color mapping
-im = ax.imshow(array_3d[:, :, 2], cmap=cmap, norm=norm)
-
-# Add a colorbar to show the mapping of values to colors
-cbar = plt.colorbar(im, ax=ax)
-
-# Show the plot
-plt.show()
-'''
-
-'''
-notes
-remove all incomplete passes/dribbles etc. remove any NaN in def line.
-df_test = df_event[['possession_team_name', 'type_name', 'outcome_name', 'timestamp']]
-download datasets locally
-'''
-
-'''
-#chains
-#df_test['type_name'].unique()
-df_test = df_event[['possession_team_name', 'type_name', 'outcome_name', 'timestamp']]
-cons = ~df_test['type_name'].isin(['Starting XI', 'Half Start', 'Injury Stoppage', 'Referee Ball-Drop', 'Half End', 'Substitution', 'Tactical Shift', 'Shield'])
-df_test = df_test[cons]
-df_test.head(30)
-'''
+transition = np.nan_to_num(transition, nan=0)
 
 
 
+xT = np.zeros((12,8,12))
+
+for a in range(2):
+  for i in range(12):
+    for j in range(8):
+      for k in range (12):
+        move_payoff = move_percent[i,j,k] * np.sum((np.nan_to_num(transition[i,j,k], nan = 0) * xT))
+        #print(move_payoff)
+        xT[i,j,k] = goal_percent[i,j,k] + move_payoff
+        #print(np.sum(xT))
 
 
-
-
+np.sum(xT)
 
 
 import plotly.graph_objs as go
 import numpy as np
 
 # Create a sample 3D array
-array_3d = shot_percent * goal_percent  # Replace this with your own data
+array_3d = all_instances
+title_name = 'all_instances'
 
 array_3d = np.nan_to_num(array_3d, nan = 0)
 
@@ -252,7 +223,7 @@ scatter = go.Scatter3d(
 
 # Create a layout for the plot
 layout = go.Layout(
-    title = '                                                    EXPECTED THREAT AFTER 0 ITERATIONS (AKA xG)',
+    title = title_name,
     scene=dict(
         xaxis_title='Touchline',
         yaxis_title='Goal line',
