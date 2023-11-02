@@ -1,4 +1,4 @@
-'''
+
 #block 1
 !pip install mplsoccer
 from mplsoccer import Sbopen, VerticalPitch
@@ -11,14 +11,14 @@ import pandas as pd
 pd.options.display.max_columns = None
 
 parser = Sbopen()
-'''
+
 
 
 '''
 #block 2
 df_all= pd.DataFrame()
 
-for i in (range(3788741, 3788776)):
+for i in (range(3788741, 3788750)):
 
   #open event dataset
   print('hi')
@@ -37,11 +37,12 @@ for i in (range(3788741, 3788776)):
     event_id = row['id']
     positions = df_frame.loc[df_frame["id"] == event_id]
     defense = positions.loc[positions["teammate"] == False]
-    if len(defense) < 2:
+    no_keeper = defense.loc[defense['keeper'] == False]
+    if len(no_keeper) < 2:
       df_actions.loc[index, "line"] = None
     else:
-      sorted = defense.x.sort_values()
-      df_actions.loc[index, "line"] = sorted.iloc[-2] #second lowest defender
+      sorted = no_keeper.x.sort_values()
+      df_actions.loc[index, "line"] = sorted.iloc[-2]
 
   df_all = pd.concat([df_all, df_actions])
 '''
@@ -78,7 +79,9 @@ for i in (range(3835321, 38353235)):
 '''
 
 
-df_all = pd.read_csv('df_all.csv')
+df_all = pd.read_csv('schick_out.csv')
+
+df_all.fillna(0, inplace=True)
 
 #block 4
 x_edges = np.linspace(0, 120, 13)
@@ -93,6 +96,7 @@ df_all['end_x_bins'] = pd.cut(df_all['end_x'], bins=x_edges, labels = x_labels)
 df_all['y_bins'] = pd.cut(df_all['y'], bins=y_edges, labels = y_labels)
 df_all['end_y_bins'] = pd.cut(df_all['end_y'], bins=y_edges, labels = y_labels)
 df_all['line_bins'] = pd.cut(df_all['line'], bins=line_edges, labels = line_labels)
+df_all.loc[(df_all['line_bins'] < 5), 'line_bins'] = 5
 
 df_all_nec = df_all[['timestamp', 'possession_team_name', 'player_name', 'type_name', 'outcome_name', 'x_bins', 'y_bins', 'line_bins', 'end_x_bins', 'end_y_bins']]
 
@@ -149,12 +153,12 @@ move_percent = np.nan_to_num(move_percent, nan = 0)
 #Block 5
 #create transition matrix: array of arrays
 
-
+df_all_nec.fillna(0, inplace=True)
 transition = np.empty((12, 8, 12), dtype = object)
 for i in range(12):
     for j in range(8):
         for k in range(12):
-          start = df_all_nec.loc[(df_all_nec['end_x_bins'] == i) & (df_all_nec['end_y_bins'] == j) & (df_all_nec['line_bins'] == k)]
+          start = df_all_nec.loc[(df_all_nec['x_bins'] == i) & (df_all_nec['y_bins'] == j) & (df_all_nec['line_bins'] == k)]
           temp_array = np.zeros((12,8,12))
           for index, row in start.iterrows():
             tempxend = row['end_x_bins']
@@ -167,9 +171,10 @@ transition = np.nan_to_num(transition, nan=0)
 
 
 
+
 xT = np.zeros((12,8,12))
 
-for a in range(2):
+for a in range(10):
   for i in range(12):
     for j in range(8):
       for k in range (12):
@@ -179,17 +184,20 @@ for a in range(2):
         #print(np.sum(xT))
 
 
-np.sum(xT)
-
 
 import plotly.graph_objs as go
 import numpy as np
 
 # Create a sample 3D array
-array_3d = all_instances
-title_name = 'all_instances'
+array_3d = xT
+title_name = 'xT(5): probability of scoring in the next 5 actions when the ball is in each location'
 
 array_3d = np.nan_to_num(array_3d, nan = 0)
+
+xT_color = xT.copy()
+xT_color[xT_color > 0] += .2
+
+array_3d_color = np.nan_to_num(xT_color, nan = 0)
 
 # Get the shape of the 3D array
 depth, rows, cols = array_3d.shape
@@ -204,6 +212,7 @@ x = x.flatten()
 y = y.flatten()
 z = z.flatten()
 values = array_3d.flatten()
+values_color = array_3d_color.flatten()
 
 # Create a 3D scatter plot
 scatter = go.Scatter3d(
@@ -214,10 +223,10 @@ scatter = go.Scatter3d(
     mode='markers',
     marker=dict(
         size=5,
-        color=values,  # Color based on the values
+        color=values_color,  # Color based on the values
         colorscale='BuPu',  # You can choose other color scales
         opacity=0.8,
-        colorbar=dict(title='Values'),  # Colorbar title
+        #colorbar=dict(title='Values'),  # Colorbar title
     ),
 )
 
@@ -239,3 +248,4 @@ fig = fig.update_traces(textposition='top center')
 
 # Show the interactive plot
 fig.show()
+
