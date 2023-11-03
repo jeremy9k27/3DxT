@@ -15,15 +15,10 @@ Consider the two screenshots below:
 
 ![image](https://github.com/jeremy9k27/3DxT/assets/118779230/491470c4-0601-4c1e-8553-0a0b56039ee4)
 
-According to xT, the value of the two situations is roughly equal because the ball is at a roughly symmetrical spots. However, it's obvious that Son is in a much more threatening position than Kompany. One way we can tell, and the reasoning we will feed to out algorithm, is that Son is **ahead of all the defnders** whereas there are many defenders in front of Kompany.
-
-
+According to xT, the value of the two situations is roughly equal because the ball is at a roughly symmetrical spots. However, it's obvious that Son is in a much more threatening position than Kompany. One way we can tell, and the reasoning we will feed to our algorithm, is that Son is **ahead of all the defenders** whereas there are many defenders in front of Kompany.
 
 
 3DxT addresses this shortcoming by incorporating defender positioning to xT, adding a new level of highly important context.
-
-Of course, on the pitch, the grids are still 2D. However, the intution of this stat becomes 3 Dimesnional because the height of the defensive line becomes a new input/dimenson. The visualization (as seen in issues), is a rectangular prism. 
-
 
 
 **Methodology**
