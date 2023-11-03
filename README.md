@@ -28,5 +28,10 @@ According to xT, the value of the two situations is roughly equal because the ba
 
 **Limitations**
 
+
+**Applications**
+
+tactical fouls
+
 **Writeup will completed in October**
 The derivation of xT is completed - however, illogical tracking data from StatsBomb must now be sorted out for the results to make sense.
