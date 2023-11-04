@@ -24,6 +24,8 @@ According to xT, the value of the two situations is roughly equal because the ba
 **Methodology**
 
 **Discussion**
+![image](https://github.com/jeremy9k27/3DxT/assets/118779230/044b0bcb-1c16-495d-b577-c83e34d7dd3c)
+
 
 
 **Limitations**
