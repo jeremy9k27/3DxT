@@ -21,17 +21,21 @@ According to xT, the value of the two situations is roughly equal because the ba
 3DxT addresses this shortcoming by incorporating defender positioning to xT, adding a new level of highly important context.
 
 
-**Methodology**
+**Methodology (Intuition)**
+
+
+
+**Methodology (Code)**
 
 **Discussion**
 ![image](https://github.com/jeremy9k27/3DxT/assets/118779230/044b0bcb-1c16-495d-b577-c83e34d7dd3c)
 
 
 
-**Limitations**
+*Limitations*
 
 
-**Applications**
+*Applications*
 
 tactical fouls
 
