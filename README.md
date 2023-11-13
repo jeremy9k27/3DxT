@@ -23,7 +23,9 @@ According to xT, the value of the two situations is roughly equal because the ba
 
 **Methodology (Intuition)**
 
-As mentoned in the introduction xT divides the pitch into an (x,y) grid. 3DxT instead represents the pitch as an (x,y,z) rectangular prism - each plane z = c that is parallel to the xy plane and c is an integer can be thought of as a a pitch where the defensive line height is c. 3DxT can be thought of as several separate xT grids, each for a different a defensuve line height. 
+As mentoned in the introduction, xT's visualization is an (x,y) grid. 3DxT instead represents the pitch as an (x,y,z) rectangular prism - each plane z = c that is parallel to the xy plane and c is an integer can be thought of as a a pitch where the defensive line height is c. 3DxT can be thought of as several separate xT grids layered onto each other, each representing a defensive line height. The process for deriving the 3DxT values begins deriving 3DxT(1). This computation is rather trivial as the 3DxT(1) of a cell is just the probability of scoring given that a player shoots from that cell.
+
+3DxT(2) and so on. 
 
 
 
