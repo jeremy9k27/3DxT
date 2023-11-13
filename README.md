@@ -23,6 +23,10 @@ According to xT, the value of the two situations is roughly equal because the ba
 
 **Methodology (Intuition)**
 
+As mentoned in the introduction xT divides the pitch into an (x,y) grid. 3DxT instead represents the pitch as an (x,y,z) rectangular prism - each plane z = c that is parallel to the xy plane and c is an integer can be thought of as a a pitch where the defensive line height is c. 3DxT can be thought of as several separate xT grids, each for a different a defensuve line height. 
+
+
+
 
 
 **Methodology (Code)**
