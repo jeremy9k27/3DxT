@@ -3,7 +3,7 @@ Introducing ‘3 Dimensional’ Expected Threat (3DxT)
 
 **Intro to xT**
 
-This novel stat is based on Sarah Rudd's xT, where a value is assigned to each grid location on the pitch. Essentialy, the value of a grid is the probability of the team in possession scoring if the ball is in that grid. More specifically, the xT of a gridpoint is the probabiility of scoring within the next n actions, where n is any positive integer. A gridpoint's xT with n=1, or xT(1), is the probability of scoring from a shot from that location since that's the only way of scoring in 1 action (yes, xT(1) is the same as xG). A gridpoint's xT(2) is the probability of scoring from 1 action + probaility of scoring from 2 actions. Scoring from 2 actions would be any non-shot action first and then a shot. xT(3) and so forth work similarly. 
+This novel stat is based on Sarah Rudd's xT, where the pitch is broken up into an (x,y) grid and a value is assigned to each grid location on the pitch. Essentialy, the value of a grid is the probability of the team in possession scoring if the ball is in that grid. More specifically, the xT of a gridpoint is the probabiility of scoring within the next n actions, where n is any positive integer. A gridpoint's xT with n=1, or xT(1), is the probability of scoring from a shot from that location since that's the only way of scoring in 1 action (yes, xT(1) is the same as xG). A gridpoint's xT(2) is the probability of scoring from 1 action + probaility of scoring from 2 actions. Scoring from 2 actions would be any non-shot action first and then a shot. xT(3) and so forth work similarly. 
 
 
 
@@ -23,7 +23,9 @@ According to xT, the value of the two situations is roughly equal because the ba
 
 **Methodology (Intuition)**
 
-As mentoned in the introduction, xT's visualization is an (x,y) grid. 3DxT instead represents the pitch as an (x,y,z) rectangular prism - each plane z = c that is parallel to the xy plane and c is an integer can be thought of as a a pitch where the defensive line height is c. 3DxT can be thought of as several separate xT grids layered onto each other, each representing a defensive line height. The process for deriving the 3DxT values begins deriving 3DxT(1). This computation is rather trivial as the 3DxT(1) of a cell is just the probability of scoring given that a player shoots from that cell.
+As mentoned in the introduction, xT is based on representing the pitch as an (x,y) grid. 3DxT instead is based on the pitch represented as an (x,y,z) rectangular prism, with the new z dimension representing the height of the defensive line. (We will refer to a single unit on this prism as a cell, being analogous to a gridpoint on an (x,y) grid.) Whereas xT(n) gives the probability of the team scoring within n actions from a certain (x,y) grid location, 3DxT(n) requires defensive line height as an extra input, but gives a more accurate proability of the team scoring within n actions from an (x,y,z) cell. 
+
+The intuition for deriving 3DxT is very similar to xT (though we will see how the computation is much more complex). We begin with computing 3DxT(1) then iterating forward. This computation is simple as the 3DxT(1) of a cell is just the probability of scoring given that a player shoots from that cell.
 
 3DxT(2) and so on. 
 
@@ -40,6 +42,11 @@ As mentoned in the introduction, xT's visualization is an (x,y) grid. 3DxT inste
 
 *Limitations*
 
+insufficient data
+
+separating into grids
+
+speed of player?
 
 *Applications*
 
