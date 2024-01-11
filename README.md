@@ -21,18 +21,15 @@ According to xT, the value of the two situations is roughly equal because the ba
 3DxT addresses this shortcoming by incorporating defender positioning to xT, adding a new level of highly important context.
 
 
-**Methodology (Overview)**
+**Methodology**
 
 As mentoned in the introduction, xT is based on representing the pitch as an (x,y) grid. 3DxT instead is based on the pitch represented as an (x,y,z) rectangular prism, with the new z dimension representing the height of the defensive line. (We will refer to a single unit on this prism as a cell, being analogous to a gridpoint on an (x,y) grid.) Whereas xT(n) gives the probability of the team scoring within n actions from a certain (x,y) grid location, 3DxT(n) requires defensive line height as an extra input, but gives a more accurate proability of the team scoring within n actions from an (x,y,z) cell. 
 
 The intuition for deriving 3DxT is very similar to xT (though we will see how the computation is much more complex). We begin with computing 3DxT(1) then iterating forward. This computation is simple as the 3DxT(1) of a cell is just the probability of scoring given that a player shoots from that cell. To compute 3DxT(2) of a cell, we need the probability that a player does any action other than shoot, and the probability of scoring given that the next action is a shot. We then sum that new value to the 3DxT(1) of that cell. Because the probabilty of moving the ball to every other cell is not equal, and the probability of scoring from every other cell is not equal, we must approach this granularly by computing what we will call the transition probabilities. The transition probabilities of a cell is the probability of the ball being moved to each cell in the entire prism (including the original cell itself) in one action, given that the player doesn't just shoot. Each probability is then multiplied by each recieving cell's corresponding probability of scoring and shooting - its 3DxT(1). The sum of these weighted probabilties is the probability of scoring in exactly 2 actions from a cell, and when added with the 3DxT(1) of the cell, we get the cell's 3DxT(2). Iterating beyond works similarly. In general, the 3DxT(n) of a cell = (sum of (transition probabiltiies to every cell multipliied by each cell's 3DxT(n-1))) + 3DxT(n-1) of cell.
 
 
+**Coding Implementation**
 
-
-
-
-**Methodology (Code)**
 
 **Discussion**
 ![image](https://github.com/jeremy9k27/3DxT/assets/118779230/044b0bcb-1c16-495d-b577-c83e34d7dd3c)
