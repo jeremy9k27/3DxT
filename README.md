@@ -21,7 +21,8 @@ According to xT, the value of the two situations is roughly equal because the ba
 3DxT addresses this shortcoming by incorporating defender positioning to xT, adding a new level of highly important context.
 
 
-**Methodology**
+***Methodology***
+**Overview**
 
 As mentoned in the introduction, xT is based on representing the pitch as an (x,y) grid. 3DxT instead is based on the pitch represented as an (x,y,z) rectangular prism, with the new z dimension representing the height of the defensive line. (We will refer to a single unit on this prism as a cell, being analogous to a gridpoint on an (x,y) grid.) Whereas xT(n) gives the probability of the team scoring within n actions from a certain (x,y) grid location, 3DxT(n) requires defensive line height as an extra input, but gives a more accurate proability of the team scoring within n actions from an (x,y,z) cell. 
 
@@ -39,8 +40,7 @@ More complicated is the transition array since each array of the 3d array is a 3
 
 There is a necessary step before computing the transiition array, however. While we have the starting x, y, and line height in our dataset, we only have the final x and y (and not the final line height). The final line height is therefore be proxied for as follows: if the final y height is above the original line height, the final line height is set to the final y height. If the final y height is not above the original line height, the final line height is set tothe orgininal line height. In soccer terms, if an action places the ball behind the original defensive line, we assume that the defensive line adjusts to be even with the ball. If the action keeps the ball in front of the original defensive line, then we assume the line does not move.
 
-
-
+We can now compute the 3DxT values. We start by initializing xT as xT(1). Recalling that this is essentialy xG, we do element by element multiplication with our shot probability array and our goal probability array. We know iterate further. For xT(2), we will again iterate through each i,j,k. We do element by element multiplication of the transition array found at i,j,k with xT(1) and then sum the resulting array. Further adding the xT(1) value at i,j,k to this sum gives us the xT(2) value at i,j,k. xT(3) at i,j,k is computed by summing the product of the transition array with xT(2), and summing again with xT(1) at i,j,k. We can continue iterating up to n, adding xT(1) to the sum of the product of the transition array and xT(n-1). Another way of thinking about this is that xT(n) = prob of shooting * value of shooting + prob of moving * value of moving, where value of moving is xT(n-1).
 
 
 
