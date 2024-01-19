@@ -24,9 +24,10 @@ According to xT, the value of the two situations is roughly equal because the ba
 ***Methodology***
 **Overview**
 
-As mentoned in the introduction, xT is based on representing the pitch as an (x,y) grid. 3DxT instead is based on the pitch represented as an (x,y,z) rectangular prism, with the new z dimension representing the height of the defensive line. (We will refer to a single unit on this prism as a cell, being analogous to a gridpoint on an (x,y) grid.) Whereas xT(n) gives the probability of the team scoring within n actions from a certain (x,y) grid location, 3DxT(n) requires defensive line height as an extra input, but gives a more accurate proability of the team scoring within n actions from an (x,y,z) cell. 
+As mentoned in the introduction, xT is based on representing the pitch as an (x,y) grid. 3DxT instead is based on the pitch represented as an (x,y,z) rectangular prism, with the new z dimension representing the height of the defensive line. (We will refer to a single unit on this prism as a cell, being analogous to a gridpoint on an (x,y) grid.) Whereas xT(n) gives the probability of the team scoring within n actions from a certain (x,y) gridpoint, 3DxT(n) requires defensive line height as an extra input, but gives a more accurate proability of the team scoring within n actions from an (x,y,z) cell. 
 
-The intuition for deriving 3DxT is very similar to xT (though we will see how the computation is much more complex). We begin with computing 3DxT(1) then iterating forward. This computation is simple as the 3DxT(1) of a cell is just the probability of scoring given that a player shoots from that cell. To compute 3DxT(2) of a cell, we need the probability that a player does any action other than shoot, and the probability of scoring given that the next action is a shot. We then sum that new value to the 3DxT(1) of that cell. Because the probabilty of moving the ball to every other cell is not equal, and the probability of scoring from every other cell is not equal, we must approach this granularly by computing what we will call the transition probabilities. The transition probabilities of a cell is the probability of the ball being moved to each cell in the entire prism (including the original cell itself) in one action, given that the player doesn't just shoot. Each probability is then multiplied by each recieving cell's corresponding probability of scoring and shooting - its 3DxT(1). The sum of these weighted probabilties is the probability of scoring in exactly 2 actions from a cell, and when added with the 3DxT(1) of the cell, we get the cell's 3DxT(2). Iterating beyond works similarly. In general, the 3DxT(n) of a cell = (sum of (transition probabiltiies to every cell multipliied by each cell's 3DxT(n-1))) + 3DxT(n-1) of cell.
+The intuition for deriving 3DxT is very similar to xT (though we will see how the computation is more complex). We begin with computing 3DxT(1) iterating forward. This computation is simple as the 3DxT(1) of a cell is just the probability of a player shooting and scoring from that cell. To compute 3DxT(2) of a cell, we need the probability that a player does any action other than shoot, and the probability of scoring given that the next action is a shot. We then sum that new value to the 3DxT(1) of that cell. Because the probabilty of moving the ball to every other cell is not equal, and the probability of scoring from every other cell is not equal, we must approach this granularly by computing what we will call the transition probabilities. The transition probabilities of a cell is the probability of the ball being moved to each cell in the entire prism (including the original cell itself) in one action, given that the player doesn't just shoot. Each probability is then multiplied by each recieving cell's corresponding probability of shooting and scoring - its 3DxT(1). We multiply the sum of these weighted probabilties by the probability that the player doesn't shoot - this is the probability of scoring in exactly 2 actions from a cell. When added with the probability that the player does shoot multiplied by the probability that the shot is scored (3DxT(1)), we get the cell's 3DxT(2). Iterating beyond works similarly. In general, 
+3DxT(n) = (probability of shooting * value of shooting) + (probability of not shooting * value of not shooting), where value of shooting is 3DxT(1) and value of not shooting is the summation of the transition probabiltiies multiplied with corresponding 3DxT(n-1) values. 
 
 
 **Coding Implementation**
@@ -40,12 +41,16 @@ More complicated is the transition array since each array of the 3d array is a 3
 
 There is a necessary step before computing the transiition array, however. While we have the starting x, y, and line height in our dataset, we only have the final x and y (and not the final line height). The final line height is therefore be proxied for as follows: if the final y height is above the original line height, the final line height is set to the final y height. If the final y height is not above the original line height, the final line height is set tothe orgininal line height. In soccer terms, if an action places the ball behind the original defensive line, we assume that the defensive line adjusts to be even with the ball. If the action keeps the ball in front of the original defensive line, then we assume the line does not move.
 
-We can now compute the 3DxT values. We start by initializing xT as xT(1). Recalling that this is essentialy xG, we do element by element multiplication with our shot probability array and our goal probability array. We know iterate further. For xT(2), we will again iterate through each i,j,k. We do element by element multiplication of the transition array found at i,j,k with xT(1) and then sum the resulting array. Further adding the xT(1) value at i,j,k to this sum gives us the xT(2) value at i,j,k. xT(3) at i,j,k is computed by summing the product of the transition array with xT(2), and summing again with xT(1) at i,j,k. We can continue iterating up to n, adding xT(1) to the sum of the product of the transition array and xT(n-1). Another way of thinking about this is that xT(n) = prob of shooting * value of shooting + prob of moving * value of moving, where value of moving is xT(n-1).
+We can now compute the 3DxT values. We start by initializing xT as xT(1). Recalling that this is essentialy xG, we do element by element multiplication with our shot probability array and our goal probability array. We know iterate further. For xT(2), we will again iterate through each i,j,k. We do element by element multiplication of the transition array found at i,j,k with xT(1) and then sum the resulting array. Further adding the xT(1) value at i,j,k to this sum gives us the xT(2) value at i,j,k. xT(3) at i,j,k is computed by summing the product of the transition array with xT(2), and summing again with xT(1) at i,j,k. We can continue iterating up to n, adding xT(1) to the sum of the product of the transition array and xT(n-1). As mentioned before, xT(n) = prob of shooting * value of shooting + prob of moving * value of moving, where value of moving is sum(transition probabilities * xT(n-1)).
 
 
 
-**Discussion**
+**Discussion and Applications**
 ![image](https://github.com/jeremy9k27/3DxT/assets/118779230/044b0bcb-1c16-495d-b577-c83e34d7dd3c)
+
+player eval for recruitment
+
+in game strategy like tactical fouls
 
 
 
@@ -57,9 +62,6 @@ separating into grids
 
 speed of player?
 
-*Applications*
 
 tactical fouls
 
-**Writeup will completed in October**
-The derivation of xT is completed - however, illogical tracking data from StatsBomb must now be sorted out for the results to make sense.
