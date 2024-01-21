@@ -1,6 +1,9 @@
 # 3DxT
 Introducing ‘3 Dimensional’ Expected Threat (3DxT) 
 
+***Abstract***
+
+
 **Intro to xT**
 
 This novel stat is based on Sarah Rudd's xT, where the pitch is broken up into an (x,y) grid and a value is assigned to each grid location on the pitch. Essentialy, the value of a grid is the probability of the team in possession scoring if the ball is in that grid. More specifically, the xT of a gridpoint is the probabiility of scoring within the next n actions, where n is any positive integer. A gridpoint's xT with n=1, or xT(1), is the probability of shooting and scoring from that location since that's the only way of scoring in 1 action (note: xT(1) isn't exactly the same as xG since xT(1) is the proability of shooting and scoring while xG is the probability of scoring given a shot). A gridpoint's xT(2) is the probability of scoring from 1 action + the probaility of scoring from 2 actions. Scoring from 2 actions would be any non-shot action first and then a shot. xT(3) and so forth work similarly. 
@@ -56,7 +59,7 @@ in game strategy like tactical fouls
 
 *Limitations*
 
-insufficient data
+The biggest limitation of this project is that its dataset is too small. We would expect that our visualization of of 
 
 separating into grids
 
