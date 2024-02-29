@@ -2,9 +2,11 @@
 Introducing ‘3 Dimensional’ Expected Threat (3DxT) 
 
 ***Abstract***
+3DxT is an extension of xT, a popular and powerful stat due to its applicability towards all phases of possession. xT is commonly computed as the probability that the team in possession will score during that same possession given the locaton that they have the ball. However, only considering ball location means that much context is lost - in particular, player locations should be considered... 
 
 
-**Intro to xT**
+
+**Intro to 3DxT and xT**
 
 This novel stat is based on Sarah Rudd's xT, where the pitch is broken up into an (x,y) grid and a value is assigned to each grid location on the pitch. Essentialy, the value of a grid is the probability of the team in possession scoring if the ball is in that grid. More specifically, the xT of a gridpoint is the probabiility of scoring within the next n actions, where n is any positive integer. A gridpoint's xT with n=1, or xT(1), is the probability of shooting and scoring from that location since that's the only way of scoring in 1 action (note: xT(1) isn't exactly the same as xG since xT(1) is the proability of shooting and scoring while xG is the probability of scoring given a shot). A gridpoint's xT(2) is the probability of scoring from 1 action + the probaility of scoring from 2 actions. Scoring from 2 actions would be any non-shot action first and then a shot. xT(3) and so forth work similarly. 
 
@@ -25,6 +27,7 @@ According to xT, the value of the two situations is roughly equal because the ba
 
 
 ***Methodology***
+
 **Overview**
 
 As mentoned in the introduction, xT is based on representing the pitch as an (x,y) grid. 3DxT instead is based on the pitch represented as an (x,y,z) rectangular prism, with the new z dimension representing the height of the defensive line. (We will refer to a single unit on this prism as a cell, being analogous to a gridpoint on an (x,y) grid.) Whereas xT(n) gives the probability of the team scoring within n actions from a certain (x,y) gridpoint, 3DxT(n) requires defensive line height as an extra input, but gives a more accurate proability of the team scoring within n actions from an (x,y,z) cell. 
