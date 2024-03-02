@@ -1,7 +1,7 @@
 # 3DxT
 Introducing ‘3 Dimensional’ Expected Threat (3DxT) 
 
-***Abstract***
+**Abstract**
 
 3DxT is an extension of xT, a popular and powerful stat due to its applicability towards all phases of possession. xT is commonly computed as the probability that the team in possession will score during that same possession given the location that they have the ball. Adding much needed context, 3DxT also incorporates player positioning as an additional input. That is, 3DxT is computed as the probability that the team in possession will score given the location they have the ball ***and*** the location of all players on the pitch. This additional dimension makes the statistic much more granular and is important considering that the same ball location with two different sets of player locations can represent two very different situations. The computation of the 3DxT probabilities uses a Markov-inspired approach applied to 3D arrays. Several 3D arrays are necessary, each following the template where the element accessed at array[i][j][k] represents the value of a certain statistic at pitch location i, j with defense line height of k. Most notable of these 3D arrays is the transition array, analogous to a transition matrix, where each entry in the 3D array is a 3D array itself. Each inner array represents the probability of the ball being moved to each location given that the ball originates at the location indicated by the outer array. The proposed methodology is applied to data from StatsBomb's API accessed through Mpl Soccer, resulting in a set of 3DxT probabilities.
 
@@ -27,9 +27,7 @@ According to xT, the value of the two situations is roughly equal because the ba
 3DxT addresses this shortcoming by incorporating defender positioning to xT, adding a new level of highly important context.
 
 
-***Methodology***
-
-**Overview**
+**Methodology Overview**
 
 As mentoned in the introduction, xT is based on representing the pitch as an (x,y) grid. 3DxT instead is based on the pitch represented as an (x,y,z) rectangular prism, with the new z dimension representing the height of the defensive line. (We will refer to a single unit on this prism as a cell, being analogous to a gridpoint on an (x,y) grid.) Whereas xT(n) gives the probability of the team scoring within n actions from a certain (x,y) gridpoint, 3DxT(n) requires defensive line height as an extra input, but gives a more accurate proability of the team scoring within n actions from an (x,y,z) cell. 
 
@@ -61,13 +59,13 @@ in game strategy like tactical fouls
 
 
 
-*Limitations*
+**Limitations**
 
 The biggest limitation of this project is that its dataset is too small. Even though there are 70,000 actions in the dataset, there are less than 200 goals (and the probabilities are derived from these goals). We would expect that our visualization of 3DxT values would be mostly symmetrical and smooth but this is not the case with our limited data. The small size of the dataset is exacerbated by the fact that the proposed methodology partitions the data so frequently. For example, many of the entries in the goal probability 3D array are based on less than 5 shots, which is obviously too small for serious inference to be made. The transition array with its inner arrays partitions the data even further, and many of the entries in the inner arrays are based on sample of less than 5. Using bigger partitions (for example, by making the arrays 10*6*10) would increase the sample of each entry at the loss of making the statistic less granular.
 
-*Future Developments*
+**Future Developments**
 
-speed of player?
+Just like xT was improved upon by including player positioning, 3DxT can be improved upon by considering player speed. Similar methods have been used in Liverpool's "pitch control" model. ???
 
 
 
