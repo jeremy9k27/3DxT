@@ -54,10 +54,9 @@ We can now compute the 3DxT values. We start by initializing xT as xT(1). Recall
 **Discussion and Applications**
 ![image](https://github.com/jeremy9k27/3DxT/assets/118779230/044b0bcb-1c16-495d-b577-c83e34d7dd3c)
 
-player eval for recruitment
+The most obvious use of this statistic is player evaluation and recruitment. The impact of players beyond direct goal contributions is notoriously hard to quantify, but 3DxT provides a comprehensive tool to measure all on-ball actions. The value of any action can be measured as the final 3DxT minus the original 3DxT, and the sum of the "3DxT added" of all actions of a player quantifies how much they improve their team's chance of scoring. 
 
-in game strategy like tactical fouls
-
+3DxT can also be used for in-game strategy. While some of what 3DxT provides is obvious (for example, getting in behind the defense is good), there may be more hidden obseravtions to be made. From a high level view, 3DxT shows which locations on the pitch are valuable, and teams should strive to move the ball into those areas.
 
 
 **Limitations**
