@@ -65,7 +65,7 @@ The biggest limitation of this project is that its dataset is too small. Even th
 
 **Future Developments**
 
-Just like xT was improved upon by including player positioning, 3DxT can be improved upon by considering player speed. Similar methods have been used in Liverpool's "pitch control" model. ???
+Just like xT was improved upon by including player positioning, 3DxT can be improved upon by considering player speed. Similar methods have been used in Liverpool's "pitch control" model. Players are often praised for being able to put the correct weight on the ball, and including current speed as an input can quantify whether a player is unitentionally making their recepient slow down.
 
 
 
