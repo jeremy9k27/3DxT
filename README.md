@@ -63,12 +63,11 @@ in game strategy like tactical fouls
 
 *Limitations*
 
-The biggest limitation of this project is that its dataset is too small. We would expect that our visualization of of 
+The biggest limitation of this project is that its dataset is too small. Even though there are 70,000 actions in the dataset, there are less than 200 goals (and the probabilities are derived from these goals). We would expect that our visualization of 3DxT values would be mostly symmetrical and smooth but this is not the case with our limited data. The small size of the dataset is exacerbated by the fact that the proposed methodology partitions the data so frequently. For example, many of the entries in the goal probability 3D array are based on less than 5 shots, which is obviously too small for serious inference to be made. The transition array with its inner arrays partitions the data even further, and many of the entries in the inner arrays are based on sample of less than 5. Using bigger partitions (for example, by making the arrays 10*6*10) would increase the sample of each entry at the loss of making the statistic less granular.
 
-separating into grids
+*Future Developments*
 
 speed of player?
 
 
-tactical fouls
 
