@@ -36,6 +36,7 @@ The intuition for deriving 3DxT is very similar to xT (though we will see how th
 
 
 **Coding Implementation**
+
 A brief discussion about how to do the code is included here. The full code can be found in 3DxT_main_code. 
 
 We begin by scraping StatBomb's public action data using mpl soccer. This data contains information about each action itself (the type of action, the timestamp, the player, the starting and stopping spot, etc), but we need to link the key piece of data we want to add is the defender locations. Thus, for each row in the dataset, we use the provided position method to find the pitch height of the second lowest defender (the first lowest defender is the keeper). We then reduce the dataset for the sake of simplicity: the only actions we care about are passing, carrying, shooting, and dribbling, and columns like opposition team name are not needed. To make the dataset ready for analysis, we need to partition the pitch into blocks and "bin" each x and y coordinate of each action into one of those blocks. Though the exact numbers don't matter, we break the pitch into a 12 by 8 - np.linspace and pd.cut are useful tools for this. Note that this means we are adding 5 new columns to each entry: the x,y coordinates of the ball's starting location, the x,y coordinates of the ball's ending location, and the y coordinate of the lowest defender. We are using the position of the lowest defender as a proxy for the entire defensive line height, so the lowest defender's x coordinate is not important.
